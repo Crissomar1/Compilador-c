@@ -28,6 +28,8 @@ public:
  static const int ELSE= 17;
  static const int INT= 18;
  static const int FLOAT= 19;
+ 
+ static const int RESERVADA= 20;
 };
 
 

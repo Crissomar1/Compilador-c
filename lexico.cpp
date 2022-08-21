@@ -80,6 +80,9 @@
           case TipoSimbolo::FLOAT:
                cad= "Def real";
                break;
+          case TipoSimbolo::RESERVADA:
+               cad= "Reservada";
+               break;
          }
          
          return cad;
@@ -102,6 +105,8 @@ int Lexico::sigSimbolo(){
       
       switch (estado){
         case 0:
+               if(esEspacio(c)) estado=0;
+               else
                if(esLetra(c)) sigEstado(9);
                else
              if ( c == '+' || c=='-') aceptacion(2);
@@ -266,7 +271,9 @@ int Lexico::sigSimbolo(){
           case 14:
                tipo= TipoSimbolo::IDENTIFICADOR;
                break;
-          
+          case 20:
+               tipo= TipoSimbolo::RESERVADA;
+               break;
           default:                 
               tipo= TipoSimbolo::ERROR;
               break;
