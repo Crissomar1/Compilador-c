@@ -47,7 +47,7 @@ class Lexico{
        bool esDigito(char c);
        bool esEspacio(char c);
        
-       bool esReservada(string sim);
+       string esReservada(string sim);
        void retroceso();
               
       public:

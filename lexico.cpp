@@ -195,15 +195,29 @@ int Lexico::sigSimbolo(){
                break;
           case 9:
                if(esLetra(c)) sigEstado(9);
-               else
-               if()
+               else{
+                    string res = esReservada(simbolo);
+                    if(res!=""){
+                    retroceso();
+                    estado=20;
+                    continua=false;
+                    } 
+               
                else
                if(esDigito(c)) sigEstado(10);
                else{
                retroceso();
-               estado=-1;
+               estado=14;
+               continua=false;}}
+               break;    
+          case 10:
+               if(esLetra(c)) sigEstado(9);
+               else 
+               if(esDigito(c)) sigEstado(10);
+               else{
+               retroceso();
+               estado=14;
                continua=false;}
-               break;        
       }  
            
    }    
@@ -252,6 +266,7 @@ int Lexico::sigSimbolo(){
           case 14:
                tipo= TipoSimbolo::IDENTIFICADOR;
                break;
+          
           default:                 
               tipo= TipoSimbolo::ERROR;
               break;
@@ -293,8 +308,21 @@ int Lexico::sigSimbolo(){
         return c== ' ' || c== '\t';        
    }
 
-   bool Lexico::esReservada  (string sim){
-          
+   string Lexico::esReservada  (string sim){
+     string reservadas[]{
+          "if",
+          "while",
+          "return",
+          "else",
+          "int",
+          "float"
+     };
+     for (size_t i = 0; i < 6; i++)
+     {
+          if (sim==reservadas[i]) return reservadas[i];
+     }
+     return "";
+     
    }
 
             
