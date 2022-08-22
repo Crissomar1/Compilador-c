@@ -112,7 +112,7 @@ Para hacer uso de este magnifico compilador debes contar con lo siguiente:
 
 ### Prerrequisitos
 
-GCC por MinGW Instalacion mediante [![MSYS2]](https://www.msys2.org/)
+GCC por MinGW Instalacion mediante [MSYS2](https://www.msys2.org/)
 * MSYS2
   ```sh
   pacman -S --needed base-devel mingw-w64-x86_64-toolchain
