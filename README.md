@@ -96,9 +96,10 @@ Use the `BLANK_README.md` to get started.
 
 ### Hecho con
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+
 
 * [![Cpp][C++]][C++-url]
+* [![VSCode][VSC]][VSCode-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -107,33 +108,26 @@ This section should list any major frameworks/libraries used to bootstrap your p
 <!-- GETTING STARTED -->
 ## Iniciacion
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+Para hacer uso de este magnifico compilador debes contar con lo siguiente:
 
 ### Prerrequisitos
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
+GCC por MinGW Instalacion mediante ![MSYS2](https://www.msys2.org/)
+* MSYS2
   ```sh
-  npm install npm@latest -g
+  pacman -S --needed base-devel mingw-w64-x86_64-toolchain
   ```
 
 ### Instalacion
 
 _Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
-1. Instalar GCC personalmente recomiendo [https://example.com](https://example.com)
-2. Clone the repo
+1. Descarga el repositorio o clonalo
+2. Encuentrate en la ubicacion del codigo fuente 
+3. Inicia una instancia de PowerShell en la misma ubicacion
+3. Corre el programa
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+   gcc principal.cpp
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -227,3 +221,5 @@ De este repositorio me inspire :)
 [JQuery-url]: https://jquery.com 
 [C++]: https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white
 [C++-url]: https://www.mingw-w64.org/
+[VSC]: https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white
+[VSCode-url]: https://code.visualstudio.com/
