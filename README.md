@@ -27,7 +27,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/Crissomar1/Compilador-c">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/logo.jpg" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Compilador C de Crisso</h3>
@@ -35,14 +35,14 @@
   <p align="center">
     Proyecto hecho para el Seminario de Solucion de Problemas de Traductores de Lenguaje
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/Crissomar1/Compilador-c"><strong>Explore los archivos »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="https://github.com/Crissomar1/Compilador-c">Mire la demostracion</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    <a href="https://github.com/Crissomar1/Compilador-c/issues">Reporte un error</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+    <a href="https://github.com/Crissomar1/Compilador-c/issues">Solicite una funcion</a>
   </p>
 </div>
 
@@ -50,7 +50,7 @@
 
 <!-- TABLE OF CONTENTS -->
 <details>
-  <summary>Table of Contents</summary>
+  <summary>Tabla de contenidos</summary>
   <ol>
     <li>
       <a href="#about-the-project">Acerca del proyecto</a>
