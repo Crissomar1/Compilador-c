@@ -77,7 +77,8 @@
 <!-- ABOUT THE PROJECT -->
 ## Acerca del proyecto
 
-[![Product Name Screen Shot][product-screenshot]](images/ss1.png)
+![Product Name Screen Shot](images/ss1.png)
+
 _texto en la primera imagen: "int america= 2323; float locura = 12.313; if (america == locura)"_
 
 Para el analizador lexico me inspire del codigo que proporciono el profesor, agregue los estados necesarios al automata y las salidas necesarias, defini las palabras reservadas y listo.
@@ -268,7 +269,8 @@ _Instalacion del codigo._
 Introduce en principal.cpp el texto a analizar y traducir justo en "lexico.entrada()"
 
 Ejemplo: _int america= 2323; float locura = 12.313; if (america == locura)_
-[![Screen Shot](images/ss2.png)]
+
+![Screen Shot](images/ss2.png)
 
 <!--_For more examples, please refer to the [Documentation](https://example.com)_-->
 
