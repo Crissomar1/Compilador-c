@@ -269,7 +269,7 @@ _Instalacion del codigo._
 
 Introduce en principal.cpp el texto a analizar y traducir justo en "lexico.entrada()"
 
-Ejemplo: while _(america == locura){for (huarachi*america)*.0+-0.}_
+Ejemplo: while _(america == locura){for (huarachi\*america)\*.0+-0.}_
 
 ![Screen Shot](images/ss2.png)
 
