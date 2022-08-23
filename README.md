@@ -77,18 +77,145 @@
 <!-- ABOUT THE PROJECT -->
 ## Acerca del proyecto
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Name Screen Shot][product-screenshot]](images/ss1.png)
+_texto en la primera imagen: "int america= 2323; float locura = 12.313; if (america == locura)"_
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+Para el analizador lexico me inspire del codigo que proporciono el profesor, agregue los estados necesarios al automata y las salidas necesarias, defini las palabras reservadas y listo.
 
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
+Funciones:
+* Analiza por elemento lexico.
+* Identifica el tipo de elemento.
+* Identifica errores en la entrada.
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+###Automata
+´´´cpp
+while (continua){
+      c= sigCaracter();
+      
+      switch (estado){
+        case 0:
+               if(esEspacio(c)) estado=0;
+               else
+               if(esLetra(c)) sigEstado(9);
+               else
+             if ( c == '+' || c=='-') aceptacion(2);
+             else
+             if ( c == '*' || c=='/') aceptacion(0);
+             else
+             if ( c == '=') sigEstado(4);
+             else
+              if ( c == '$' ) aceptacion(3);
+               else
+               if(esDigito(c)) sigEstado(1);
+               else
+               if(c == '.') aceptacion(-2);
+               else
+               if(c == '<'|| c=='>') sigEstado(5);
+               else
+               if(c == '!') sigEstado(6);
+               else
+               if(c == '&') sigEstado(7);
+               else
+               if(c == '|') sigEstado(8);
+               else
+               if(c == '('||c == ')') aceptacion(10);
+               else
+               if(c == '{'||c == '}') aceptacion(11);
+               else
+               if(c == ';') aceptacion(12);
 
-Use the `BLANK_README.md` to get started.
+             break;
+          case 1:
+               if(esDigito(c)) sigEstado(1);
+               else
+               if(c=='.') sigEstado(2);
+               else{
+               retroceso();
+               estado=1;
+               continua=false;}
+               break;
+
+          case 2:
+               if(esDigito(c)) sigEstado(3);
+               else{
+                    retroceso();
+                    estado=-1;
+                    continua=false;
+               }
+               break;
+               
+          case 3:
+               if(esDigito(c)) sigEstado(3);
+               else{
+               retroceso();
+               estado=5;
+               continua=false;}
+               
+               break;  
+          case 4:
+               if(c=='=') aceptacion(4);
+               else{
+               retroceso();
+               estado=6;
+               continua=false;}
+               break; 
+          case 5:
+               if(c=='=') aceptacion(4);
+               else{
+               retroceso();
+               estado=4;
+               continua=false;}
+               break;
+          case 6:
+               if(c=='=') aceptacion(4);
+               else{
+               retroceso();
+               estado=7;
+               continua=false;}
+               break; 
+          case 7:
+               if(c=='&') aceptacion(8);
+               else{
+               retroceso();
+               estado=-1;
+               continua=false;}
+               break;
+          case 8:
+               if(c=='|') aceptacion(9);
+               else{
+               retroceso();
+               estado=-1;
+               continua=false;}
+               break;
+          case 9:
+               if(esLetra(c)) sigEstado(9);
+               else{
+                    string res = esReservada(simbolo);
+                    if(res!=""){
+                    retroceso();
+                    estado=20;
+                    continua=false;
+                    } 
+               
+               else
+               if(esDigito(c)) sigEstado(10);
+               else{
+               retroceso();
+               estado=14;
+               continua=false;}}
+               break;    
+          case 10:
+               if(esLetra(c)) sigEstado(9);
+               else 
+               if(esDigito(c)) sigEstado(10);
+               else{
+               retroceso();
+               estado=14;
+               continua=false;}
+      }  
+           
+   }    
+´´´
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -138,7 +265,9 @@ _Instalacion del codigo._
 <!-- USAGE EXAMPLES -->
 ## Uso
 
-Introduce en entrada.txt el texto a analizar y traducir
+Introduce en principal.cpp el texto a analizar y traducir justo en "lexico.entrada()"
+Ejemplo: _int america= 2323; float locura = 12.313; if (america == locura)_
+[![Screen Shot][SS]](images/ss2.png)
 
 <!--_For more examples, please refer to the [Documentation](https://example.com)_-->
 
