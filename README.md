@@ -268,7 +268,7 @@ _Instalacion del codigo._
 Introduce en principal.cpp el texto a analizar y traducir justo en "lexico.entrada()"
 
 Ejemplo: _int america= 2323; float locura = 12.313; if (america == locura)_
-[![Screen Shot][test]][images/ss2.png]
+[![Screen Shot](images/ss2.png)]
 
 <!--_For more examples, please refer to the [Documentation](https://example.com)_-->
 
