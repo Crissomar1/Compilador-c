@@ -89,6 +89,7 @@ Funciones:
 * Identifica errores en la entrada.
 
 ###Automata
+
 ```cpp
 while (continua){
       c= sigCaracter();
@@ -268,7 +269,7 @@ _Instalacion del codigo._
 
 Introduce en principal.cpp el texto a analizar y traducir justo en "lexico.entrada()"
 
-Ejemplo: _int america= 2323; float locura = 12.313; if (america == locura)_
+Ejemplo: while _(america == locura){for (huarachi*america)*.0+-0.}_
 
 ![Screen Shot](images/ss2.png)
 
