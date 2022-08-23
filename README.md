@@ -89,7 +89,7 @@ Funciones:
 * Identifica errores en la entrada.
 
 ###Automata
-´´´cpp
+```cpp
 while (continua){
       c= sigCaracter();
       
@@ -216,7 +216,7 @@ while (continua){
       }  
            
    }    
-´´´
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
