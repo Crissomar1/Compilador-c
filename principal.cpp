@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <stack>
 
 #include "lexico.cpp"
 
@@ -8,7 +9,7 @@ using namespace std;
 
 int main(int argc, char *argv[]){
 
-    
+    stack<int> pila;
     Lexico lexico; 
     lexico.entrada("int america= 2323; float locura = 12.313; if (america == locura)");
     

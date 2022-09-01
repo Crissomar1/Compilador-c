@@ -53,10 +53,13 @@
           case TipoSimbolo::NOT:
                cad= "Op not";
                break;
-          case TipoSimbolo::PARENTECIS:
+          
+          case TipoSimbolo::C_PARENTECIS:
+          case TipoSimbolo::A_PARENTECIS:
                cad= "Parentecis";
                break;
-          case TipoSimbolo::LLAVE:
+          case TipoSimbolo::A_LLAVE:
+          case TipoSimbolo::C_LLAVE:
                cad= "Llave";
                break;
           case TipoSimbolo::PUNTCOMM:
@@ -74,14 +77,11 @@
           case TipoSimbolo::ELSE:
                cad= "Else";
                break;
-          case TipoSimbolo::INT:
-               cad= "Def entero";
+          case TipoSimbolo::TIPO:
+               cad= "Tipo";
                break;
-          case TipoSimbolo::FLOAT:
-               cad= "Def real";
-               break;
-          case TipoSimbolo::RESERVADA:
-               cad= "Reservada";
+          case TipoSimbolo::EQUAL:
+               cad= "Igual";
                break;
          }
          
@@ -109,17 +109,20 @@ int Lexico::sigSimbolo(){
                else
                if(esLetra(c)) sigEstado(9);
                else
-             if ( c == '+' || c=='-') aceptacion(2);
+          
+             if ( c == '"') sigEstado(11);
              else
-             if ( c == '*' || c=='/') aceptacion(0);
+             if ( c == '+' || c=='-') aceptacion(TipoSimbolo::OPADIC);
+             else
+             if ( c == '*' || c=='/') aceptacion(TipoSimbolo::OPMULT);
              else
              if ( c == '=') sigEstado(4);
              else
-              if ( c == '$' ) aceptacion(3);
+              if ( c == '$' ) aceptacion(TipoSimbolo::PESOS);
                else
                if(esDigito(c)) sigEstado(1);
                else
-               if(c == '.') aceptacion(-2);
+               if(c == '.') aceptacion(TipoSimbolo::ERROR);
                else
                if(c == '<'|| c=='>') sigEstado(5);
                else
@@ -129,11 +132,17 @@ int Lexico::sigSimbolo(){
                else
                if(c == '|') sigEstado(8);
                else
-               if(c == '('||c == ')') aceptacion(10);
+               if(c == '(') aceptacion(TipoSimbolo::A_PARENTECIS);
                else
-               if(c == '{'||c == '}') aceptacion(11);
+               if(c == ')') aceptacion(TipoSimbolo::C_PARENTECIS);
                else
-               if(c == ';') aceptacion(12);
+               if(c == '{') aceptacion(TipoSimbolo::A_LLAVE);
+               else
+               if(c == '}') aceptacion(TipoSimbolo::C_LLAVE);
+               else
+               if(c == ';') aceptacion(TipoSimbolo::PUNTCOMM);
+               else
+               if(c == ',') aceptacion(TipoSimbolo::COMM);
 
              break;
           case 1:
@@ -142,15 +151,15 @@ int Lexico::sigSimbolo(){
                if(c=='.') sigEstado(2);
                else{
                retroceso();
-               estado=1;
-               continua=false;}
+               tipo=TipoSimbolo::ENTERO;
+               }
                break;
 
           case 2:
                if(esDigito(c)) sigEstado(3);
                else{
                     retroceso();
-                    estado=-1;
+                    tipo=TipoSimbolo::ERROR;
                     continua=false;
                }
                break;
@@ -159,40 +168,40 @@ int Lexico::sigSimbolo(){
                if(esDigito(c)) sigEstado(3);
                else{
                retroceso();
-               estado=5;
-               continua=false;}
+               tipo=TipoSimbolo::REAL;
+               }
                
                break;  
           case 4:
-               if(c=='=') aceptacion(4);
+               if(c=='=') aceptacion(TipoSimbolo::EQUAL);
                else{
                retroceso();
-               estado=6;
+               tipo=TipoSimbolo::ASIGN;
                continua=false;}
                break; 
           case 5:
-               if(c=='=') aceptacion(4);
+               if(c=='=') aceptacion(TipoSimbolo::OPRELA);
                else{
                retroceso();
-               estado=4;
+               tipo=TipoSimbolo::OPRELA;
                continua=false;}
                break;
           case 6:
-               if(c=='=') aceptacion(4);
+               if(c=='=') aceptacion(TipoSimbolo::EQUAL);
                else{
                retroceso();
-               estado=7;
+               tipo=TipoSimbolo::NOT;
                continua=false;}
                break; 
           case 7:
-               if(c=='&') aceptacion(8);
+               if(c=='&') aceptacion(TipoSimbolo::AND);
                else{
                retroceso();
-               estado=-1;
+               tipo=TipoSimbolo::ERROR;
                continua=false;}
                break;
           case 8:
-               if(c=='|') aceptacion(9);
+               if(c=='|') aceptacion(TipoSimbolo::OR);
                else{
                retroceso();
                estado=-1;
@@ -201,18 +210,39 @@ int Lexico::sigSimbolo(){
           case 9:
                if(esLetra(c)) sigEstado(9);
                else{
-                    string res = esReservada(simbolo);
-                    if(res!=""){
-                    retroceso();
-                    estado=20;
-                    continua=false;
+                    int res = esReservada(simbolo);
+                    if(res!=-1){
+                         retroceso();
+                         switch (res)
+                         {
+                         case 0:
+                              tipo=TipoSimbolo::IF;
+                              break;
+                         case 1:
+                              tipo=TipoSimbolo::WHILE;
+                              break;
+                         case 2:
+                              tipo=TipoSimbolo::RET;
+                              break;
+                         case 3:
+                              tipo=TipoSimbolo::ELSE;
+                              break;
+                         case 4:
+                         case 5:
+                         case 6:
+                              tipo=TipoSimbolo::TIPO;
+                              break;
+                         
+                         default:
+                              break;
+                         }
                     } 
                
                else
                if(esDigito(c)) sigEstado(10);
                else{
                retroceso();
-               estado=14;
+               tipo=TipoSimbolo::IDENTIFICADOR;
                continua=false;}}
                break;    
           case 10:
@@ -223,61 +253,16 @@ int Lexico::sigSimbolo(){
                retroceso();
                estado=14;
                continua=false;}
+               break;
+          case 11:
+               if(c=='"') aceptacion(TipoSimbolo::CADENA);
+               else sigEstado(11);
+               break;
       }  
            
    }    
     //Fin del Automata
-    
-      switch (estado){
-          case 0:
-              tipo= TipoSimbolo::OPMULT;
-              break; 
-         case 2:
-              tipo= TipoSimbolo::OPADIC;
-              break; 
-          case 1:
-              tipo= TipoSimbolo::ENTERO;
-              break; 
-          case 5:
-               tipo= TipoSimbolo::REAL;
-               break;
-          case 3:
-               tipo= TipoSimbolo::PESOS;
-               break;
-          case 4:
-               tipo= TipoSimbolo::OPRELA;
-               break;
-          case 6:
-               tipo= TipoSimbolo::ASIGN;
-               break;
-          case 7:
-               tipo= TipoSimbolo::NOT;
-               break;
-          case 8:
-               tipo= TipoSimbolo::AND;
-               break;
-          case 9:
-               tipo= TipoSimbolo::OR;
-               break;
-          case 10:
-               tipo= TipoSimbolo::PARENTECIS;
-               break;
-          case 11:
-               tipo= TipoSimbolo::LLAVE;
-               break;
-          case 13:
-               tipo= TipoSimbolo::PUNTCOMM;
-               break;
-          case 14:
-               tipo= TipoSimbolo::IDENTIFICADOR;
-               break;
-          case 20:
-               tipo= TipoSimbolo::RESERVADA;
-               break;
-          default:                 
-              tipo= TipoSimbolo::ERROR;
-              break;
-      }
+   
     		
 	return tipo;
 }
@@ -293,8 +278,9 @@ int Lexico::sigSimbolo(){
        simbolo+= c;
   }
   
-  void Lexico::aceptacion(int estado){
-       sigEstado(estado);
+  void Lexico::aceptacion(int tipo){
+       this->tipo=tipo;
+       simbolo+= c;
        continua= false;
   }
 
@@ -315,20 +301,21 @@ int Lexico::sigSimbolo(){
         return c== ' ' || c== '\t';        
    }
 
-   string Lexico::esReservada  (string sim){
+   int Lexico::esReservada  (string sim){
      string reservadas[]{
           "if",
           "while",
           "return",
           "else",
           "int",
-          "float"
+          "float",
+          "void"
      };
      for (size_t i = 0; i < 6; i++)
      {
-          if (sim==reservadas[i]) return reservadas[i];
+          if (sim==reservadas[i]) return i;
      }
-     return "";
+     return -1;
      
    }
 

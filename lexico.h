@@ -8,28 +8,30 @@ using namespace std;
 class TipoSimbolo{
 public:
  static const int ERROR= -1;       
- static const int IDENTIFICADOR= 0;
- static const int OPADIC= 1;
- static const int OPMULT= 2;
- static const int PESOS= 3;       
- static const int ENTERO= 4;
- static const int REAL= 5;
- static const int ASIGN= 6;
+ static const int IDENTIFICADOR= 0;       
+ static const int ENTERO= 1;
+ static const int REAL= 2;
+ static const int CADENA= 3;
+ static const int TIPO= 4;
+ static const int OPADIC= 5;
+ static const int OPMULT= 6;
  static const int OPRELA= 7;
- static const int AND= 8;
- static const int OR= 9;
+ static const int OR= 8;
+ static const int AND= 9;
  static const int NOT= 10;
- static const int PARENTECIS= 11;
- static const int LLAVE= 12;
- static const int PUNTCOMM= 13;
- static const int IF= 14;
- static const int WHILE= 15;
- static const int RET= 16;
- static const int ELSE= 17;
- static const int INT= 18;
- static const int FLOAT= 19;
- 
- static const int RESERVADA= 20;
+ static const int EQUAL= 11;
+ static const int PUNTCOMM= 12;
+ static const int COMM= 13;
+ static const int A_PARENTECIS= 14;
+ static const int C_PARENTECIS= 15;
+ static const int A_LLAVE= 16;
+ static const int C_LLAVE= 17;
+ static const int ASIGN= 18;
+ static const int IF= 19;
+ static const int WHILE= 20;
+ static const int RET= 21;
+ static const int ELSE= 22;
+ static const int PESOS= 23;
 };
 
 
@@ -49,7 +51,7 @@ class Lexico{
        bool esDigito(char c);
        bool esEspacio(char c);
        
-       string esReservada(string sim);
+       int esReservada(string sim);
        void retroceso();
               
       public:
