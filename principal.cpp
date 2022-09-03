@@ -14,19 +14,19 @@ int main(int argc, char *argv[]){
     int tablaLR[5][4]={
         2, 0, 0,1,
         0, 0, -1,0,
-        0, 3, -2,0,
+        0, 3, -3,0,
         2,0,0,4,
-        0,0,1,0
+        0,0,-2,0
     };
     int idReglas[2]={2,2};
-    int lonReglas[2]={3,0};
+    int lonReglas[2]={3,1};
 
 
     Pila<int> pila;
     int fila, columna, accion;
     bool aceptacion;
 
-    pila.push(TipoSimbolo::PESOS);
+    pila.push(/*TipoSimbolo::PESOS*/2);//2 en el ejemplo y ejercicios actual
     pila.push(0);
 
     Lexico lexico; 
@@ -57,15 +57,16 @@ int main(int argc, char *argv[]){
             pila.push(accion);
         }
         if (accion<=-2){
-            int rule=abs(accion);
-            int red=lonReglas[rule];
+            int rule=abs(accion)-2;//se resta 1 por el offset a la representacion de reglas en negativo y se resta otro por dispocision de arreglos de reglas
+            int red=lonReglas[rule]*2;
             int ter=idReglas[rule];
             int i=0;
-
+            
             while(i<red){
                 pila.pop();
                 i++;
             }
+            
             fila=pila.top();
             switch(lexico.tipo){    //Un pequeño traductor de analizador lexico para que funcione con nuestra tabla de transiciones
             case TipoSimbolo::IDENTIFICADOR:
@@ -78,7 +79,8 @@ int main(int argc, char *argv[]){
                 columna=2;
                 break;
              }
-            accion=tablaLR[fila][columna];
+            accion=tablaLR[fila][3];
+
             pila.push(ter);
             pila.push(accion);
             pila.muestra();

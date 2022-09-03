@@ -77,147 +77,106 @@
 <!-- ABOUT THE PROJECT -->
 ## Acerca del proyecto
 
-![Product Name Screen Shot](images/ss1.png)
+![Product Name Screen Shot](images/Stable.png)
 
-_texto en la primera imagen: "int america= 2323; float locura = 12.313; if (america == locura)"_
+_Tabla del analizador sintáctico_
 
-Para el analizador lexico me inspire del codigo que proporciono el profesor, agregue los estados necesarios al automata y las salidas necesarias, defini las palabras reservadas y listo.
+Para el analizador sintáctico me inspire del codigo que proporciono el profesor, agregue ya todos los codigos al lexico y programe los ejercicios, traduje los codigos del lexico al los codigos de la tabla del ejercicio, procese la informacion de la tabla correctamente.
 
 Funciones:
 * Analiza por elemento lexico.
-* Identifica el tipo de elemento.
-* Identifica errores en la entrada.
+* Desplazamientos en tabla.
+* Reducciones dependiendo de reglas.
 
-###Automata
+###Analizador
 
 ```cpp
-while (continua){
-      c= sigCaracter();
-      
-      switch (estado){
-        case 0:
-               if(esEspacio(c)) estado=0;
-               else
-               if(esLetra(c)) sigEstado(9);
-               else
-             if ( c == '+' || c=='-') aceptacion(2);
-             else
-             if ( c == '*' || c=='/') aceptacion(0);
-             else
-             if ( c == '=') sigEstado(4);
-             else
-              if ( c == '$' ) aceptacion(3);
-               else
-               if(esDigito(c)) sigEstado(1);
-               else
-               if(c == '.') aceptacion(-2);
-               else
-               if(c == '<'|| c=='>') sigEstado(5);
-               else
-               if(c == '!') sigEstado(6);
-               else
-               if(c == '&') sigEstado(7);
-               else
-               if(c == '|') sigEstado(8);
-               else
-               if(c == '('||c == ')') aceptacion(10);
-               else
-               if(c == '{'||c == '}') aceptacion(11);
-               else
-               if(c == ';') aceptacion(12);
+int tablaLR[5][4]={
+        2, 0, 0, 1,
+        0, 0, -1, 0,
+        0, 3, -3, 0,
+        2, 0, 0, 4,
+        0, 0, -2, 0
+    };
+    int idReglas[2]={2,2};
+    int lonReglas[2]={3,1};
 
-             break;
-          case 1:
-               if(esDigito(c)) sigEstado(1);
-               else
-               if(c=='.') sigEstado(2);
-               else{
-               retroceso();
-               estado=1;
-               continua=false;}
-               break;
 
-          case 2:
-               if(esDigito(c)) sigEstado(3);
-               else{
-                    retroceso();
-                    estado=-1;
-                    continua=false;
-               }
-               break;
-               
-          case 3:
-               if(esDigito(c)) sigEstado(3);
-               else{
-               retroceso();
-               estado=5;
-               continua=false;}
-               
-               break;  
-          case 4:
-               if(c=='=') aceptacion(4);
-               else{
-               retroceso();
-               estado=6;
-               continua=false;}
-               break; 
-          case 5:
-               if(c=='=') aceptacion(4);
-               else{
-               retroceso();
-               estado=4;
-               continua=false;}
-               break;
-          case 6:
-               if(c=='=') aceptacion(4);
-               else{
-               retroceso();
-               estado=7;
-               continua=false;}
-               break; 
-          case 7:
-               if(c=='&') aceptacion(8);
-               else{
-               retroceso();
-               estado=-1;
-               continua=false;}
-               break;
-          case 8:
-               if(c=='|') aceptacion(9);
-               else{
-               retroceso();
-               estado=-1;
-               continua=false;}
-               break;
-          case 9:
-               if(esLetra(c)) sigEstado(9);
-               else{
-                    string res = esReservada(simbolo);
-                    if(res!=""){
-                    retroceso();
-                    estado=20;
-                    continua=false;
-                    } 
-               
-               else
-               if(esDigito(c)) sigEstado(10);
-               else{
-               retroceso();
-               estado=14;
-               continua=false;}}
-               break;    
-          case 10:
-               if(esLetra(c)) sigEstado(9);
-               else 
-               if(esDigito(c)) sigEstado(10);
-               else{
-               retroceso();
-               estado=14;
-               continua=false;}
-      }  
-           
-   }    
+    Pila<int> pila;
+    int fila, columna, accion;
+    bool aceptacion;
+
+    pila.push(/*TipoSimbolo::PESOS*/2);//2 en el ejemplo y ejercicios actual
+    pila.push(0);
+
+    Lexico lexico; 
+    lexico.entrada("a+b+c+d+e+f");
+    while (true)
+    {
+        lexico.sigSimbolo();
+
+        fila=pila.top();
+        switch(lexico.tipo){    //Un pequeño traductor de analizador lexico para que funcione con nuestra tabla de transiciones
+            case TipoSimbolo::IDENTIFICADOR:
+                columna=0;
+                break;
+            case TipoSimbolo::OPADIC:
+                columna=1;
+                break;
+            case TipoSimbolo::PESOS:
+                columna=2;
+                break;
+        }
+        accion=tablaLR[fila][columna];
+
+        pila.muestra();
+        cout << "entrada: " << lexico.simbolo << endl;
+        cout << "accion: " << accion << endl;
+        if (accion>0){
+            pila.push(lexico.tipo);
+            pila.push(accion);
+        }
+        if (accion<=-2){
+            int rule=abs(accion)-2;//se resta 1 por el offset a la representacion de reglas en negativo y se resta otro por dispocision de arreglos de reglas
+            int red=lonReglas[rule]*2;
+            int ter=idReglas[rule];
+            int i=0;
+            
+            while(i<red){
+                pila.pop();
+                i++;
+            }
+            
+            fila=pila.top();
+            switch(lexico.tipo){    //Un pequeño traductor de analizador lexico para que funcione con nuestra tabla de transiciones
+            case TipoSimbolo::IDENTIFICADOR:
+                columna=0;
+                break;
+            case TipoSimbolo::OPADIC:
+                columna=1;
+                break;
+            case TipoSimbolo::PESOS:
+                columna=2;
+                break;
+             }
+            accion=tablaLR[fila][3];
+
+            pila.push(ter);
+            pila.push(accion);
+            pila.muestra();
+            cout << "entrada: " << lexico.simbolo << endl;
+            cout << "accion: " << accion << endl;
+        }
+        if (accion==-1) cout << "aceptación" << endl;
 ```
+
+Resultado:
+
+
+![Screen Shot 1](images/ss1.png)
+
+![Screen Shot 2](images/ss2.png)
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -269,9 +228,11 @@ _Instalacion del codigo._
 
 Introduce en principal.cpp el texto a analizar y traducir justo en "lexico.entrada()"
 
-Ejemplo: while _(america == locura){for (huarachi\*america)\*.0+-0.}_
+Ejemplo:  _"a+b+c+d+e+f"_
 
-![Screen Shot](images/ss2.png)
+![Screen Shot 1](images/ss1.png)
+
+![Screen Shot 2](images/ss2.png)
 
 <!--_For more examples, please refer to the [Documentation](https://example.com)_-->
 
@@ -282,10 +243,10 @@ Ejemplo: while _(america == locura){for (huarachi\*america)\*.0+-0.}_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] Analizador Lexico
-- [x] Analizador...
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
+- [x] Analizador Léxico
+- [x] Analizador Sintáctico 
+- [ ] Gramatica
+- [ ] Analizador Semántico
 - [ ] Multi-language Support
     - [ ] Chinese
     - [ ] Spanish
