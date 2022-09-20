@@ -2,6 +2,7 @@
     "files.associations": {
         "stack": "cpp",
         "string": "cpp",
-        "deque": "cpp"
+        "deque": "cpp",
+        "memory_resource": "cpp"
     }
 }

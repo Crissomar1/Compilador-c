@@ -5,6 +5,7 @@
 
 #include "lexico.cpp"
 #include "pila.cpp"
+#include "nodoSintactico.h"
 
 using namespace std;
 
@@ -22,12 +23,13 @@ int main(int argc, char *argv[]){
     int lonReglas[2]={3,1};
 
 
-    Pila<int> pila;
+    Pila<nodoSintactico*> pila;
     int fila, columna, accion;
     bool aceptacion;
+    nodoSintactico *nodo= new nodoSintactico('E',2,0,"$",NULL,NULL,NULL);
 
-    pila.push(/*TipoSimbolo::PESOS*/2);//2 en el ejemplo y ejercicios actual
-    pila.push(0);
+    pila.push(/*TipoSimbolo::PESOS*/nodo);//2 en el ejemplo y ejercicios actual
+
 
     Lexico lexico; 
     lexico.entrada("a+b+c+d+e+f");
@@ -35,7 +37,7 @@ int main(int argc, char *argv[]){
     {
         lexico.sigSimbolo();
 
-        fila=pila.top();
+        fila=pila.top()->transicion;
         switch(lexico.tipo){    //Un pequeño traductor de analizador lexico para que funcione con nuestra tabla de transiciones
             case TipoSimbolo::IDENTIFICADOR:
                 columna=0;
@@ -53,14 +55,16 @@ int main(int argc, char *argv[]){
         cout << "entrada: " << lexico.simbolo << endl;
         cout << "accion: " << accion << endl;
         if (accion>0){
-            pila.push(lexico.tipo);
-            pila.push(accion);
+            nodoSintactico *estado= new nodoSintactico('E',lexico.tipo,accion,lexico.simbolo,NULL,NULL,NULL);
+            pila.push(estado);
         }
         if (accion<=-2){
             int rule=abs(accion)-2;//se resta 1 por el offset a la representacion de reglas en negativo y se resta otro por dispocision de arreglos de reglas
-            int red=lonReglas[rule]*2;
+            int red=lonReglas[rule];
             int ter=idReglas[rule];
             int i=0;
+            //crear un nodo para la regla
+            nodoSintactico ;
             
             while(i<red){
                 pila.pop();
