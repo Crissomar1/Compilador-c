@@ -4,19 +4,19 @@
 #include <list>
 #include <iostream>
 #include <string>
+#include "nodoSintactico.h"
 
 using namespace std;
 
-template<class T>
 class Pila{
 
    private:      
-      list <T> lista;      
+      list <nodoSintactico*> lista;      
       
    public:      
-      void push( T x);
-      T top();
-      T pop();
+      void push( nodoSintactico* x);
+      nodoSintactico* top();
+      nodoSintactico* pop();
       void muestra();
 };
 

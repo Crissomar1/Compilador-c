@@ -3,29 +3,25 @@
 #include <sstream>
 
 
-template<class T>
-  void Pila<T>::push( T x){
+  void Pila::push( nodoSintactico* x){
        lista.push_front(x);
   }
 
-template<class T>
- T  Pila<T>::pop(){
+nodoSintactico*  Pila::pop(){
 
-     int x= *lista.begin();
+     nodoSintactico* x= *lista.begin();
      lista.erase ( lista.begin() );
      
      return x;
   }
 
- template<class T>
-  T Pila<T>::top(){
+  nodoSintactico* Pila::top(){
      return *lista.begin();     
   }
 
-  template<class T>
-  void Pila<T>::muestra(){
+  void Pila::muestra(){
 
-     list<int>::reverse_iterator it;
+     list<nodoSintactico*>::reverse_iterator it;
 
      cout << "Pila: ";   
      

@@ -23,10 +23,10 @@ int main(int argc, char *argv[]){
     int lonReglas[2]={3,1};
 
 
-    Pila<nodoSintactico*> pila;
+    Pila pila;
     int fila, columna, accion;
     bool aceptacion;
-    nodoSintactico *nodo= new nodoSintactico('E',2,0,"$",NULL,NULL,NULL);
+    nodoSintactico *nodo= new nodoSintactico('E',2,0,"$");
 
     pila.push(/*TipoSimbolo::PESOS*/nodo);//2 en el ejemplo y ejercicios actual
 
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]){
         cout << "entrada: " << lexico.simbolo << endl;
         cout << "accion: " << accion << endl;
         if (accion>0){
-            nodoSintactico *estado= new nodoSintactico('E',lexico.tipo,accion,lexico.simbolo,NULL,NULL,NULL);
+            nodoSintactico *estado= new nodoSintactico('E',lexico.tipo,accion,lexico.simbolo);
             pila.push(estado);
         }
         if (accion<=-2){
@@ -64,14 +64,14 @@ int main(int argc, char *argv[]){
             int ter=idReglas[rule];
             int i=0;
             //crear un nodo para la regla
-            nodoSintactico ;
+            nodoSintactico *nodo= new nodoSintactico('N',ter,0,"E");
             
             while(i<red){
-                pila.pop();
+                nodo->hijos.push_front(pila.top());
                 i++;
             }
             
-            fila=pila.top();
+            fila=pila.top()->transicion;
             switch(lexico.tipo){    //Un pequeño traductor de analizador lexico para que funcione con nuestra tabla de transiciones
             case TipoSimbolo::IDENTIFICADOR:
                 columna=0;
@@ -84,9 +84,8 @@ int main(int argc, char *argv[]){
                 break;
              }
             accion=tablaLR[fila][3];
-
-            pila.push(ter);
-            pila.push(accion);
+            nodo->transicion=accion;
+            pila.push(nodo);
             pila.muestra();
             cout << "entrada: " << lexico.simbolo << endl;
             cout << "accion: " << accion << endl;

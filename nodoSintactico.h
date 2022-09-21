@@ -11,46 +11,39 @@ public:
     int token;
     int transicion;
     string valor;
-    nodoSintactico *hijoIzq;
-    nodoSintactico *hijoOperacion;
-    nodoSintactico *hijoDer;
+    list<nodoSintactico*> hijos;
 
-    nodoSintactico(char tipo,int token,int fila, string valor, nodoSintactico *hijoIzq, nodoSintactico *hijoDer, nodoSintactico *hermanoDer);
+    nodoSintactico(char tipo,int token,int fila, string valor);
     ~nodoSintactico();
-    nodoSintactico(int transicion,int token,nodoSintactico *hijoIzq, nodoSintactico *hijoOperacion, nodoSintactico *hijoDer);
+    nodoSintactico(int transicion,int token,string valor);
     string generaValor();
 };
 
 
-nodoSintactico::nodoSintactico(int transicion,int token, nodoSintactico *hijoIzq, nodoSintactico *hijoOperacion, nodoSintactico *hijoDer){
+nodoSintactico::nodoSintactico(int transicion,int token,string valor){
     this->tipo='N';
     this->token=token;
     this->transicion=transicion;
-    this->valor="";
-    this->hijoIzq=hijoIzq;
-    this->hijoOperacion=hijoOperacion;
-    this->hijoDer=hijoDer;
+    this->valor=valor;
 }
 
-nodoSintactico::nodoSintactico(char tipo, int token,int fila, string valor, nodoSintactico *hijoIzq, nodoSintactico *hijoDer, nodoSintactico *hermanoDer)
-{
-    this->tipo = tipo;
-    this->token = token;
-    this->transicion = fila;
-    this->valor = valor;
-    this->hijoIzq = hijoIzq;
-    this->hijoDer = hijoDer;
-    this->hijoOperacion = hijoOperacion;
+nodoSintactico::nodoSintactico(char tipo, int token,int fila, string valor){
+    this->tipo=tipo;
+    this->token=token;
+    this->transicion=fila;
+    this->valor=valor;
 }
 
 string nodoSintactico::generaValor(){
     if(tipo == 'E') return this->valor;
     else if(tipo == 'N'){
-        string valorIzq = this->hijoIzq->generaValor();
-        string valorDer = this->hijoDer->generaValor();
-        string operacion = this->hijoOperacion->generaValor();
-        return valorIzq + operacion + valorDer;
+        string valor = "";
+        for(list<nodoSintactico*>::iterator it = hijos.begin(); it != hijos.end(); it++){
+            valor += (*it)->generaValor();
+        }
+        return valor;
     }
+    return "";
 }
 
 nodoSintactico::~nodoSintactico()
