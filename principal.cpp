@@ -32,7 +32,10 @@ int main(int argc, char *argv[]){
 
 
     Lexico lexico; 
-    lexico.entrada("a+b+c+d+e+f");
+    string entrada = "a+b+c+d+e+f";
+    cout << "Entrada: " << entrada << endl;
+    
+    lexico.entrada(entrada);
     while (true)
     {
         lexico.sigSimbolo();
@@ -55,7 +58,7 @@ int main(int argc, char *argv[]){
         cout << "entrada: " << lexico.simbolo << endl;
         cout << "accion: " << accion << endl;
         if (accion>0){
-            nodoSintactico *estado= new nodoSintactico('E',lexico.tipo,accion,lexico.simbolo);
+            nodoSintactico *estado= new nodoSintactico('E',columna,accion,lexico.simbolo);
             pila.push(estado);
         }
         if (accion<=-2){
@@ -68,6 +71,7 @@ int main(int argc, char *argv[]){
             
             while(i<red){
                 nodo->hijos.push_front(pila.top());
+                pila.pop();
                 i++;
             }
             

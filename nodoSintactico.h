@@ -17,6 +17,7 @@ public:
     ~nodoSintactico();
     nodoSintactico(int transicion,int token,string valor);
     string generaValor();
+    friend ostream& operator<<(ostream& os, const nodoSintactico& nodo);
 };
 
 
@@ -25,6 +26,15 @@ nodoSintactico::nodoSintactico(int transicion,int token,string valor){
     this->token=token;
     this->transicion=transicion;
     this->valor=valor;
+}
+
+ostream& operator<<(ostream& os,  nodoSintactico& nodo){
+    if (nodo.tipo=='E'){
+        os << nodo.valor << nodo.token;
+    }else{
+        os <<nodo.valor<<"("<< nodo.generaValor()<<")"<< nodo.token;
+    }
+    return os;
 }
 
 nodoSintactico::nodoSintactico(char tipo, int token,int fila, string valor){

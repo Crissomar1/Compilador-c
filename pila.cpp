@@ -26,7 +26,7 @@ nodoSintactico*  Pila::pop(){
      cout << "Pila: ";   
      
      for (it= lista.rbegin(); it != lista.rend(); it++){
-         cout << (*it) << " ";         
+         cout << *(*it) << " ";         
      } 
   
      cout << endl;
