@@ -61,14 +61,6 @@ nodoSintactico::~nodoSintactico()
 
 }
 
-class Estado:private nodoSintactico
-{
-private:
-    int estado;
-    string valor;
-    Estado *hijoIzq;
-    Estado *hijoDer;
-    Estado *hermanoDer;
-};
+
 
 #endif
