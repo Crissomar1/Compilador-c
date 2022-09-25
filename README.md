@@ -319,9 +319,9 @@ Ejemplo:  _"a+b+c+d+e+f"_
     - [x] Analizador sintáctico con objetos  
 - [ ] Gramatica
 - [ ] Analizador Semántico
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
+- [ ] Generador de Código Intermedio
+- [ ] Generador de Código Objetivo
+
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
