@@ -82,92 +82,163 @@
 _Tabla del analizador sintáctico_
 
 Para el analizador sintáctico me inspire del codigo que proporciono el profesor, agregue ya todos los codigos al lexico y programe los ejercicios, traduje los codigos del lexico al los codigos de la tabla del ejercicio, procese la informacion de la tabla correctamente.
+Solo aplique Programacion orientada a objetos el "nodoSintactico" cuenta con una lista de nodos hijos, el mismo nodo sirve para los estados y los no terminales.
 
 Funciones:
 * Analiza por elemento lexico.
+* Almaecena los elementos lexicos en una pila.
+* Programacion orientada a objetos.
+* Procesa la informacion de la tabla.
 * Desplazamientos en tabla.
 * Reducciones dependiendo de reglas.
+
+###nodosSintactico
+```cpp
+class nodoSintactico
+{
+public:
+    char tipo;
+    int token;
+    int transicion;
+    string valor;
+    list<nodoSintactico*> hijos;
+
+    nodoSintactico(char tipo,int token,int fila, string valor);
+    ~nodoSintactico();
+    nodoSintactico(int transicion,int token,string valor);
+    string generaValor();
+    friend ostream& operator<<(ostream& os, const nodoSintactico& nodo);
+};
+
+
+nodoSintactico::nodoSintactico(int transicion,int token,string valor){
+    this->tipo='N';
+    this->token=token;
+    this->transicion=transicion;
+    this->valor=valor;
+}
+
+ostream& operator<<(ostream& os,  nodoSintactico& nodo){
+    if (nodo.tipo=='E'){
+        os << nodo.valor << nodo.token;
+    }else{
+        os <<nodo.valor<<"("<< nodo.generaValor()<<")"<< nodo.token;
+    }
+    return os;
+}
+
+nodoSintactico::nodoSintactico(char tipo, int token,int fila, string valor){
+    this->tipo=tipo;
+    this->token=token;
+    this->transicion=fila;
+    this->valor=valor;
+}
+
+string nodoSintactico::generaValor(){
+    if(tipo == 'E') return this->valor;
+    else if(tipo == 'N'){
+        string valor = "";
+        for(list<nodoSintactico*>::iterator it = hijos.begin(); it != hijos.end(); it++){
+            valor += (*it)->generaValor();
+        }
+        return valor;
+    }
+    return "";
+}
+
+
+```
 
 ###Analizador
 
 ```cpp
 int tablaLR[5][4]={
-        2, 0, 0, 1,
-        0, 0, -1, 0,
-        0, 3, -3, 0,
-        2, 0, 0, 4,
-        0, 0, -2, 0
-    };
-    int idReglas[2]={2,2};
-    int lonReglas[2]={3,1};
+    2, 0, 0,1,
+    0, 0, -1,0,
+    0, 3, -3,0,
+    2,0,0,4,
+    0,0,-2,0
+};
+int idReglas[2]={2,2};
+int lonReglas[2]={3,1};
 
 
-    Pila<int> pila;
-    int fila, columna, accion;
-    bool aceptacion;
+Pila pila;
+int fila, columna, accion;
+bool aceptacion;
+nodoSintactico *nodo= new nodoSintactico('E',2,0,"$");
 
-    pila.push(/*TipoSimbolo::PESOS*/2);//2 en el ejemplo y ejercicios actual
-    pila.push(0);
+pila.push(/*TipoSimbolo::PESOS*/nodo);//2 en el ejemplo y ejercicios actual
 
-    Lexico lexico; 
-    lexico.entrada("a+b+c+d+e+f");
-    while (true)
-    {
-        lexico.sigSimbolo();
 
-        fila=pila.top();
-        switch(lexico.tipo){    //Un pequeño traductor de analizador lexico para que funcione con nuestra tabla de transiciones
-            case TipoSimbolo::IDENTIFICADOR:
-                columna=0;
-                break;
-            case TipoSimbolo::OPADIC:
-                columna=1;
-                break;
-            case TipoSimbolo::PESOS:
-                columna=2;
-                break;
+Lexico lexico; 
+string entrada = "a+b+c+d+e+f";
+cout << "Entrada: " << entrada << endl;
+
+lexico.entrada(entrada);
+while (true)
+{
+    lexico.sigSimbolo();
+
+    fila=pila.top()->transicion;
+    switch(lexico.tipo){    //Un pequeño traductor de analizador lexico para que funcione con nuestra tabla de transiciones
+        case TipoSimbolo::IDENTIFICADOR:
+            columna=0;
+            break;
+        case TipoSimbolo::OPADIC:
+            columna=1;
+            break;
+        case TipoSimbolo::PESOS:
+            columna=2;
+            break;
+    }
+    accion=tablaLR[fila][columna];
+
+    pila.muestra();
+    cout << "entrada: " << lexico.simbolo << endl;
+    cout << "accion: " << accion << endl;
+    if (accion>0){
+        nodoSintactico *estado= new nodoSintactico('E',columna,accion,lexico.simbolo);
+        pila.push(estado);
+    }
+    if (accion<=-2){
+        int rule=abs(accion)-2;//se resta 1 por el offset a la representacion de reglas en negativo y se resta otro por dispocision de arreglos de reglas
+        int red=lonReglas[rule];
+        int ter=idReglas[rule];
+        int i=0;
+        //crear un nodo para la regla
+        nodoSintactico *nodo= new nodoSintactico('N',ter,0,"E");
+        
+        while(i<red){
+            nodo->hijos.push_front(pila.top());
+            pila.pop();
+            i++;
         }
-        accion=tablaLR[fila][columna];
-
+        
+        fila=pila.top()->transicion;
+        switch(lexico.tipo){    //Un pequeño traductor de analizador lexico para que funcione con nuestra tabla de transiciones
+        case TipoSimbolo::IDENTIFICADOR:
+            columna=0;
+            break;
+        case TipoSimbolo::OPADIC:
+            columna=1;
+            break;
+        case TipoSimbolo::PESOS:
+            columna=2;
+            break;
+            }
+        accion=tablaLR[fila][3];
+        nodo->transicion=accion;
+        pila.push(nodo);
         pila.muestra();
         cout << "entrada: " << lexico.simbolo << endl;
         cout << "accion: " << accion << endl;
-        if (accion>0){
-            pila.push(lexico.tipo);
-            pila.push(accion);
-        }
-        if (accion<=-2){
-            int rule=abs(accion)-2;//se resta 1 por el offset a la representacion de reglas en negativo y se resta otro por dispocision de arreglos de reglas
-            int red=lonReglas[rule]*2;
-            int ter=idReglas[rule];
-            int i=0;
-            
-            while(i<red){
-                pila.pop();
-                i++;
-            }
-            
-            fila=pila.top();
-            switch(lexico.tipo){    //Un pequeño traductor de analizador lexico para que funcione con nuestra tabla de transiciones
-            case TipoSimbolo::IDENTIFICADOR:
-                columna=0;
-                break;
-            case TipoSimbolo::OPADIC:
-                columna=1;
-                break;
-            case TipoSimbolo::PESOS:
-                columna=2;
-                break;
-             }
-            accion=tablaLR[fila][3];
-
-            pila.push(ter);
-            pila.push(accion);
-            pila.muestra();
-            cout << "entrada: " << lexico.simbolo << endl;
-            cout << "accion: " << accion << endl;
-        }
-        if (accion==-1) cout << "aceptación" << endl;
+    }
+    if (accion==-1){
+        cout << "aceptación" << endl;
+        break;
+    }
+    cin.get();
 ```
 
 Resultado:
@@ -245,6 +316,7 @@ Ejemplo:  _"a+b+c+d+e+f"_
 
 - [x] Analizador Léxico
 - [x] Analizador Sintáctico 
+    - [x] Analizador sintáctico con objetos  
 - [ ] Gramatica
 - [ ] Analizador Semántico
 - [ ] Multi-language Support

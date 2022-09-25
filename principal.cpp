@@ -94,7 +94,10 @@ int main(int argc, char *argv[]){
             cout << "entrada: " << lexico.simbolo << endl;
             cout << "accion: " << accion << endl;
         }
-        if (accion==-1) cout << "aceptación" << endl;
+        if (accion==-1){
+            cout << "aceptación" << endl;
+            break;
+        }
         cin.get();
     }
     
