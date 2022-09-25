@@ -16,11 +16,11 @@ class Gramatica
     vector<string> simRegla;
     int filas, columnas;
     vector<vector<int> > tablaLR;
-    Gramatica(/* args */);
+    Gramatica();
     ~Gramatica();
 };
 
-Gramatica::Gramatica(/* args */)
+Gramatica::Gramatica()
 {
     //leer archivo
     ifstream archivo("GramaticaCompilador/compilador.lr", ios::in);

@@ -83,6 +83,7 @@ _Tabla del analizador sintáctico_
 
 Para el analizador sintáctico me inspire del codigo que proporciono el profesor, agregue ya todos los codigos al lexico y programe los ejercicios, traduje los codigos del lexico al los codigos de la tabla del ejercicio, procese la informacion de la tabla correctamente.
 Solo aplique Programacion orientada a objetos el "nodoSintactico" cuenta con una lista de nodos hijos, el mismo nodo sirve para los estados y los no terminales.
+Ya cree una clase para cargar la gramatica con los vectores correspondientes desde el archivo compilador.lr
 
 Funciones:
 * Analiza por elemento lexico.
@@ -92,87 +93,75 @@ Funciones:
 * Desplazamientos en tabla.
 * Reducciones dependiendo de reglas.
 
+Falta:
+* Reducciones dinamicas por ejemplo, argumentos y listas de variables
+
 ###nodosSintactico
 ```cpp
-class nodoSintactico
+class Gramatica
 {
-public:
-    char tipo;
-    int token;
-    int transicion;
-    string valor;
-    list<nodoSintactico*> hijos;
-
-    nodoSintactico(char tipo,int token,int fila, string valor);
-    ~nodoSintactico();
-    nodoSintactico(int transicion,int token,string valor);
-    string generaValor();
-    friend ostream& operator<<(ostream& os, const nodoSintactico& nodo);
+    public:
+    int reglas;
+    vector<int> idRegla;
+    vector<int> lonRegla;
+    vector<string> simRegla;
+    int filas, columnas;
+    vector<vector<int> > tablaLR;
+    Gramatica();
+    ~Gramatica();
 };
 
-
-nodoSintactico::nodoSintactico(int transicion,int token,string valor){
-    this->tipo='N';
-    this->token=token;
-    this->transicion=transicion;
-    this->valor=valor;
-}
-
-ostream& operator<<(ostream& os,  nodoSintactico& nodo){
-    if (nodo.tipo=='E'){
-        os << nodo.valor << nodo.token;
-    }else{
-        os <<nodo.valor<<"("<< nodo.generaValor()<<")"<< nodo.token;
+Gramatica::Gramatica()
+{
+    //leer archivo
+    ifstream archivo("GramaticaCompilador/compilador.lr", ios::in);
+    if(archivo.fail()){
+        cout << "No se pudo abrir el archivo" << endl;
+        exit(1);
     }
-    return os;
-}
-
-nodoSintactico::nodoSintactico(char tipo, int token,int fila, string valor){
-    this->tipo=tipo;
-    this->token=token;
-    this->transicion=fila;
-    this->valor=valor;
-}
-
-string nodoSintactico::generaValor(){
-    if(tipo == 'E') return this->valor;
-    else if(tipo == 'N'){
-        string valor = "";
-        for(list<nodoSintactico*>::iterator it = hijos.begin(); it != hijos.end(); it++){
-            valor += (*it)->generaValor();
+    //leer reglas
+    archivo >> reglas;
+    idRegla.resize(reglas);
+    lonRegla.resize(reglas);
+    simRegla.resize(reglas);
+    for(int i = 0; i < reglas; i++){
+        archivo >> idRegla[i];
+        archivo >> lonRegla[i];
+        archivo >> simRegla[i];
+    }
+    //leer tabla
+    archivo >> filas >> columnas;
+    tablaLR.resize(filas);
+    for(int i = 0; i < filas; i++){
+        tablaLR[i].resize(columnas);
+        for(int j = 0; j < columnas; j++){
+            archivo >> tablaLR[i][j];
         }
-        return valor;
     }
-    return "";
+    archivo.close();
+    
 }
 
-
+Gramatica::~Gramatica()
+{
+}
 ```
 
 ###Analizador
 
 ```cpp
-int tablaLR[5][4]={
-    2, 0, 0,1,
-    0, 0, -1,0,
-    0, 3, -3,0,
-    2,0,0,4,
-    0,0,-2,0
-};
-int idReglas[2]={2,2};
-int lonReglas[2]={3,1};
-
+Gramatica gramatica;
 
 Pila pila;
 int fila, columna, accion;
 bool aceptacion;
-nodoSintactico *nodo= new nodoSintactico('E',2,0,"$");
+nodoSintactico *nodo= new nodoSintactico('E',TipoSimbolo::PESOS,0,"$");
 
 pila.push(/*TipoSimbolo::PESOS*/nodo);//2 en el ejemplo y ejercicios actual
 
 
 Lexico lexico; 
-string entrada = "a+b+c+d+e+f";
+string entrada = "int a; a=1; float real = 23.98;";
 cout << "Entrada: " << entrada << endl;
 
 lexico.entrada(entrada);
@@ -181,18 +170,8 @@ while (true)
     lexico.sigSimbolo();
 
     fila=pila.top()->transicion;
-    switch(lexico.tipo){    //Un pequeño traductor de analizador lexico para que funcione con nuestra tabla de transiciones
-        case TipoSimbolo::IDENTIFICADOR:
-            columna=0;
-            break;
-        case TipoSimbolo::OPADIC:
-            columna=1;
-            break;
-        case TipoSimbolo::PESOS:
-            columna=2;
-            break;
-    }
-    accion=tablaLR[fila][columna];
+    columna=lexico.tipo;
+    accion=gramatica.tablaLR[fila][columna];
 
     pila.muestra();
     cout << "entrada: " << lexico.simbolo << endl;
@@ -203,11 +182,11 @@ while (true)
     }
     if (accion<=-2){
         int rule=abs(accion)-2;//se resta 1 por el offset a la representacion de reglas en negativo y se resta otro por dispocision de arreglos de reglas
-        int red=lonReglas[rule];
-        int ter=idReglas[rule];
+        int red=gramatica.lonRegla[rule];
+        int ter=gramatica.idRegla[rule];
         int i=0;
         //crear un nodo para la regla
-        nodoSintactico *nodo= new nodoSintactico('N',ter,0,"E");
+        nodoSintactico *nodo= new nodoSintactico('N',accion,ter,gramatica.simRegla[rule]);
         
         while(i<red){
             nodo->hijos.push_front(pila.top());
@@ -216,18 +195,7 @@ while (true)
         }
         
         fila=pila.top()->transicion;
-        switch(lexico.tipo){    //Un pequeño traductor de analizador lexico para que funcione con nuestra tabla de transiciones
-        case TipoSimbolo::IDENTIFICADOR:
-            columna=0;
-            break;
-        case TipoSimbolo::OPADIC:
-            columna=1;
-            break;
-        case TipoSimbolo::PESOS:
-            columna=2;
-            break;
-            }
-        accion=tablaLR[fila][3];
+        accion=gramatica.tablaLR[fila][ter];
         nodo->transicion=accion;
         pila.push(nodo);
         pila.muestra();
@@ -239,6 +207,12 @@ while (true)
         break;
     }
     cin.get();
+}
+
+
+cin.get();
+
+return 0;
 ```
 
 Resultado:
@@ -317,7 +291,7 @@ Ejemplo:  _"a+b+c+d+e+f"_
 - [x] Analizador Léxico
 - [x] Analizador Sintáctico 
     - [x] Analizador sintáctico con objetos  
-- [ ] Gramatica
+- [x] Gramatica
 - [ ] Analizador Semántico
 - [ ] Generador de Código Intermedio
 - [ ] Generador de Código Objetivo

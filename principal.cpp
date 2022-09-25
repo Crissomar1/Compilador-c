@@ -12,17 +12,6 @@ using namespace std;
 
 
 int main(int argc, char *argv[]){
-
-    // int tablaLR[5][4]={
-    //     2, 0, 0,1,
-    //     0, 0, -1,0,
-    //     0, 3, -3,0,
-    //     2,0,0,4,
-    //     0,0,-2,0
-    // };
-    // int idReglas[2]={2,2};
-    // int lonReglas[2]={3,1};
-
     Gramatica gramatica;
 
     Pila pila;
@@ -34,7 +23,7 @@ int main(int argc, char *argv[]){
 
 
     Lexico lexico; 
-    string entrada = "int main(){int a; a=1;}";
+    string entrada = "int a; a=1; float real = 23.98;";
     cout << "Entrada: " << entrada << endl;
     
     lexico.entrada(entrada);
@@ -43,17 +32,6 @@ int main(int argc, char *argv[]){
         lexico.sigSimbolo();
 
         fila=pila.top()->transicion;
-        // switch(lexico.tipo){    //Un pequeño traductor de analizador lexico para que funcione con nuestra tabla de transiciones
-        //     case TipoSimbolo::IDENTIFICADOR:
-        //         columna=0;
-        //         break;
-        //     case TipoSimbolo::OPADIC:
-        //         columna=1;
-        //         break;
-        //     case TipoSimbolo::PESOS:
-        //         columna=2;
-        //         break;
-        // }
         columna=lexico.tipo;
         accion=gramatica.tablaLR[fila][columna];
 
