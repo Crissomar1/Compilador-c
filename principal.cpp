@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
             int i=0;
             //crear un nodo para la regla
             nodoSintactico *nodo= new nodoSintactico('N',accion,ter,gramatica.simRegla[rule]);
-            
+            cout<<red<<endl;
             while(i<red){
                 nodo->hijos.push_front(pila.top());
                 pila.pop();
