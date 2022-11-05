@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
     
     lexico.entrada(entrada);
     semantica();
-    
+    pila.muestra();
   
     return 0;
 }
@@ -64,14 +64,7 @@ void reducir(){
     siguienteFila = gramatica.tablaLR[fila][columna];
     pila.top()->fila = siguienteFila;
 
-    cout <<endl<< "Regla: " << gramatica.simRegla[regla] << endl;
-    cout << "fila: " << fila << endl;
-    cout << "columna: " << columna << endl;
-    cout << "accion: " << siguienteFila << endl<<endl;
-
     siguienteFila = gramatica.tablaLR[pila.top()->fila][lexico.tipo];
-    
-    cout << "accion: " << siguienteFila << endl<<endl;
     if(siguienteFila<-1){
         reducir();
         return;
@@ -91,19 +84,11 @@ void semantica(){
         
         siguienteFila=gramatica.tablaLR[fila][columna];
 
-        pila.muestra();
-        cout << "entrada: " << lexico.simbolo << endl;
-        cout << "fila: " << fila << endl;
-        cout << "accion: " << siguienteFila << endl;
         if (siguienteFila>0){
             desplazar();
         }
         if (siguienteFila<=-2){
             reducir();
-            pila.muestra();
-            cout << "entrada: " << lexico.simbolo << endl;
-            cout << "fila: " << fila << endl;
-            cout << "accion: " << siguienteFila << endl;
         }
         if (siguienteFila==-1){
             cout << "aceptación" << endl;
@@ -114,7 +99,6 @@ void semantica(){
             cin.get();
             return;
         }
-        cin.get();
 
     }
     

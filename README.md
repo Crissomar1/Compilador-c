@@ -96,7 +96,7 @@ Funciones:
 Falta:
 * analizador semantico
 
-###nodosSintactico
+### nodosSintactico
 ```cpp
 class Gramatica
 {
@@ -147,7 +147,7 @@ Gramatica::~Gramatica()
 }
 ```
 
-###Analizador sintactico
+### Analizador sintactico
 
 ```cpp
 void desplazar(){
@@ -172,14 +172,7 @@ void reducir(){
     siguienteFila = gramatica.tablaLR[fila][columna];
     pila.top()->fila = siguienteFila;
 
-    cout <<endl<< "Regla: " << gramatica.simRegla[regla] << endl;
-    cout << "fila: " << fila << endl;
-    cout << "columna: " << columna << endl;
-    cout << "accion: " << siguienteFila << endl<<endl;
-
     siguienteFila = gramatica.tablaLR[pila.top()->fila][lexico.tipo];
-    
-    cout << "accion: " << siguienteFila << endl<<endl;
     if(siguienteFila<-1){
         reducir();
         return;
@@ -199,19 +192,11 @@ void semantica(){
         
         siguienteFila=gramatica.tablaLR[fila][columna];
 
-        pila.muestra();
-        cout << "entrada: " << lexico.simbolo << endl;
-        cout << "fila: " << fila << endl;
-        cout << "accion: " << siguienteFila << endl;
         if (siguienteFila>0){
             desplazar();
         }
         if (siguienteFila<=-2){
             reducir();
-            pila.muestra();
-            cout << "entrada: " << lexico.simbolo << endl;
-            cout << "fila: " << fila << endl;
-            cout << "accion: " << siguienteFila << endl;
         }
         if (siguienteFila==-1){
             cout << "aceptación" << endl;
@@ -222,12 +207,42 @@ void semantica(){
             cin.get();
             return;
         }
-        cin.get();
 
     }
     
 
     std::cin.get();
+}
+```
+
+### Imprimir Arbol 
+
+```cpp
+void Pila::muestra(){
+
+    list<nodoSintactico*>::reverse_iterator it;
+    contador=0;
+    cout << "Arbol: ";
+    
+    for (it= lista.rbegin(); it != lista.rend(); it++){
+        cout << *(*it) << " ";         
+    } 
+
+    cout << endl;
+}
+
+ostream& operator<<(ostream& os,  nodoSintactico& nodo){
+    for(int i=0;i<contador;i++){
+        os << "|-";
+    }
+    os << nodo.valor << endl;
+    contador++;
+    list<nodoSintactico*>::iterator it;
+    for(it=nodo.hijos.begin();it!=nodo.hijos.end();it++){
+        os << *(*it);
+    }
+    contador--;
+    return os;
 }
 ```
 

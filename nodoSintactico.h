@@ -4,6 +4,8 @@
 #include <string>
 using namespace std;
 
+int contador=0;
+
 class nodoSintactico
 {
 public:
@@ -29,13 +31,16 @@ nodoSintactico::nodoSintactico(int fila,int token,string valor){
 }
 
 ostream& operator<<(ostream& os,  nodoSintactico& nodo){
-    
-        os << nodo.valor << nodo.token;
-    /*if (nodo.tipo=='E'){
-        os << nodo.valor << nodo.token;
-    }else{
-        os <<nodo.valor<<"("<< nodo.generaValor()<<")"<< nodo.token;
-    }*/
+    for(int i=0;i<contador;i++){
+        os << "|-";
+    }
+    os << nodo.valor << endl;
+    contador++;
+    list<nodoSintactico*>::iterator it;
+    for(it=nodo.hijos.begin();it!=nodo.hijos.end();it++){
+        os << *(*it);
+    }
+    contador--;
     return os;
 }
 

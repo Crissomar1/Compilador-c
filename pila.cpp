@@ -22,8 +22,8 @@ nodoSintactico*  Pila::pop(){
   void Pila::muestra(){
 
      list<nodoSintactico*>::reverse_iterator it;
-
-     cout << "Pila: ";   
+     contador=0;
+     cout << "Arbol: ";
      
      for (it= lista.rbegin(); it != lista.rend(); it++){
          cout << *(*it) << " ";         
