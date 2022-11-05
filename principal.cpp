@@ -56,18 +56,13 @@ void reducir(){
         pila.pop();
     }
 
-
     columna=gramatica.idRegla[regla];
     fila = pila.top()->fila;
 
     pila.push(nodo);
 
-
-
     siguienteFila = gramatica.tablaLR[fila][columna];
     pila.top()->fila = siguienteFila;
-
-    
 
     cout <<endl<< "Regla: " << gramatica.simRegla[regla] << endl;
     cout << "fila: " << fila << endl;
@@ -113,6 +108,11 @@ void semantica(){
         if (siguienteFila==-1){
             cout << "aceptación" << endl;
             break;
+        }
+        if (siguienteFila==0){
+          cout << "error simbolo inesperado: " << lexico.simbolo << endl;
+            cin.get();
+            return;
         }
         cin.get();
 

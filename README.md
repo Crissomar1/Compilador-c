@@ -147,74 +147,88 @@ Gramatica::~Gramatica()
 }
 ```
 
-###```python
-Analizador
-```
+###Analizador sintactico
 
 ```cpp
-Gramatica gramatica;
-
-Pila pila;
-int fila, columna, accion;
-bool aceptacion;
-nodoSintactico *nodo= new nodoSintactico('E',TipoSimbolo::PESOS,0,"$");
-
-pila.push(/*TipoSimbolo::PESOS*/nodo);//2 en el ejemplo y ejercicios actual
-
-
-Lexico lexico; 
-string entrada = "int a; a=1; float real = 23.98;";
-cout << "Entrada: " << entrada << endl;
-
-lexico.entrada(entrada);
-while (true)
-{
-    lexico.sigSimbolo();
-
-    fila=pila.top()->transicion;
-    columna=lexico.tipo;
-    accion=gramatica.tablaLR[fila][columna];
-
-    pila.muestra();
-    cout << "entrada: " << lexico.simbolo << endl;
-    cout << "accion: " << accion << endl;
-    if (accion>0){
-        nodoSintactico *estado= new nodoSintactico('E',columna,accion,lexico.simbolo);
-        pila.push(estado);
-    }
-    if (accion<=-2){
-        int rule=abs(accion)-2;//se resta 1 por el offset a la representacion de reglas en negativo y se resta otro por dispocision de arreglos de reglas
-        int red=gramatica.lonRegla[rule];
-        int ter=gramatica.idRegla[rule];
-        int i=0;
-        //crear un nodo para la regla
-        nodoSintactico *nodo= new nodoSintactico('N',accion,ter,gramatica.simRegla[rule]);
-        
-        while(i<red){
-            nodo->hijos.push_front(pila.top());
-            pila.pop();
-            i++;
-        }
-        
-        fila=pila.top()->transicion;
-        accion=gramatica.tablaLR[fila][ter];
-        nodo->transicion=accion;
-        pila.push(nodo);
-        pila.muestra();
-        cout << "entrada: " << lexico.simbolo << endl;
-        cout << "accion: " << accion << endl;
-    }
-    if (accion==-1){
-        cout << "aceptación" << endl;
-        break;
-    }
-    cin.get();
+void desplazar(){
+    nodoSintactico *estado= new nodoSintactico('E',columna,siguienteFila,lexico.simbolo);
+    pila.push(estado);
 }
 
+void reducir(){
+    int regla = abs(siguienteFila)-2;
+    int n = gramatica.lonRegla[regla];
+    nodoSintactico *nodo= new nodoSintactico('N',siguienteFila,gramatica.idRegla[regla],gramatica.simRegla[regla]);
+    for(int i=0;i<n;i++){
+        nodo->hijos.push_front(pila.top());
+        pila.pop();
+    }
 
-cin.get();
+    columna=gramatica.idRegla[regla];
+    fila = pila.top()->fila;
 
-return 0;
+    pila.push(nodo);
+
+    siguienteFila = gramatica.tablaLR[fila][columna];
+    pila.top()->fila = siguienteFila;
+
+    cout <<endl<< "Regla: " << gramatica.simRegla[regla] << endl;
+    cout << "fila: " << fila << endl;
+    cout << "columna: " << columna << endl;
+    cout << "accion: " << siguienteFila << endl<<endl;
+
+    siguienteFila = gramatica.tablaLR[pila.top()->fila][lexico.tipo];
+    
+    cout << "accion: " << siguienteFila << endl<<endl;
+    if(siguienteFila<-1){
+        reducir();
+        return;
+    }
+
+    nodoSintactico *nodo2= new nodoSintactico('E',lexico.tipo,siguienteFila,lexico.simbolo);
+    pila.push(nodo2);
+}
+
+void semantica(){
+    while (true)
+    {
+        lexico.sigSimbolo();
+
+        fila=pila.top()->fila;
+        columna=lexico.tipo;
+        
+        siguienteFila=gramatica.tablaLR[fila][columna];
+
+        pila.muestra();
+        cout << "entrada: " << lexico.simbolo << endl;
+        cout << "fila: " << fila << endl;
+        cout << "accion: " << siguienteFila << endl;
+        if (siguienteFila>0){
+            desplazar();
+        }
+        if (siguienteFila<=-2){
+            reducir();
+            pila.muestra();
+            cout << "entrada: " << lexico.simbolo << endl;
+            cout << "fila: " << fila << endl;
+            cout << "accion: " << siguienteFila << endl;
+        }
+        if (siguienteFila==-1){
+            cout << "aceptación" << endl;
+            break;
+        }
+        if (siguienteFila==0){
+          cout << "error simbolo inesperado: " << lexico.simbolo << endl;
+            cin.get();
+            return;
+        }
+        cin.get();
+
+    }
+    
+
+    std::cin.get();
+}
 ```
 
 Resultado:
@@ -273,9 +287,9 @@ _Instalacion del codigo._
 <!-- USAGE EXAMPLES -->
 ## Uso
 
-Introduce en principal.cpp el texto a analizar y traducir justo en "lexico.entrada()"
+Introduce en Prueba.txt el texto a analizar y traducir
 
-Ejemplo:  _"a+b+c+d+e+f"_
+Ejemplo:  _"int main(){}"_
 
 ![Screen Shot 1](images/ss1.png)
 
