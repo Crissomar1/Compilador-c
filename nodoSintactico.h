@@ -9,38 +9,40 @@ class nodoSintactico
 public:
     char tipo;
     int token;
-    int transicion;
+    int fila;
     string valor;
     list<nodoSintactico*> hijos;
 
     nodoSintactico(char tipo,int token,int fila, string valor);
     ~nodoSintactico();
-    nodoSintactico(int transicion,int token,string valor);
+    nodoSintactico(int fila,int token,string valor);
     string generaValor();
     friend ostream& operator<<(ostream& os, const nodoSintactico& nodo);
 };
 
 
-nodoSintactico::nodoSintactico(int transicion,int token,string valor){
+nodoSintactico::nodoSintactico(int fila,int token,string valor){
     this->tipo='N';
     this->token=token;
-    this->transicion=transicion;
+    this->fila=fila;
     this->valor=valor;
 }
 
 ostream& operator<<(ostream& os,  nodoSintactico& nodo){
-    if (nodo.tipo=='E'){
+    
+        os << nodo.valor << nodo.token;
+    /*if (nodo.tipo=='E'){
         os << nodo.valor << nodo.token;
     }else{
         os <<nodo.valor<<"("<< nodo.generaValor()<<")"<< nodo.token;
-    }
+    }*/
     return os;
 }
 
 nodoSintactico::nodoSintactico(char tipo, int token,int fila, string valor){
     this->tipo=tipo;
     this->token=token;
-    this->transicion=fila;
+    this->fila=fila;
     this->valor=valor;
 }
 

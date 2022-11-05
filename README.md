@@ -94,7 +94,7 @@ Funciones:
 * Reducciones dependiendo de reglas.
 
 Falta:
-* Reducciones dinamicas por ejemplo, argumentos y listas de variables
+* analizador semantico
 
 ###nodosSintactico
 ```cpp
@@ -147,7 +147,9 @@ Gramatica::~Gramatica()
 }
 ```
 
-###Analizador
+###```python
+Analizador
+```
 
 ```cpp
 Gramatica gramatica;
