@@ -245,7 +245,7 @@ _Codigo del analizador semántico_
 
 
 
-## Resultados:
+### Resultados:
 
 
 ![Screen Shot 1](images/ss1.png)
