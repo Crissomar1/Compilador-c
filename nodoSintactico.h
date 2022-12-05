@@ -10,6 +10,7 @@ int contador=0;
 
 string ambito;
 TablaSimbolos tabla;
+bool error = false;
 
 class nodoSintactico
 {
@@ -120,6 +121,7 @@ char nodoSintactico::validaTipos(){
                     if(tabla.existe(simbolo,ambito)||tabla.existe(simbolo,ambito+"Param")){
                         cout<<"Ln "<<this->linea<<": ";
                         cout << "Error semantico: " << simbolo << " ya existe"<< endl;
+                        error=true;
                     }else{
                         tabla.inserta(simbolo,tipoDef,tipoDato,ambito);
                     }
@@ -151,6 +153,7 @@ char nodoSintactico::validaTipos(){
                     if(tabla.existe(simbolo,ambito)||tabla.existe(simbolo,ambito+"Param")){
                         cout<<"Ln "<<this->linea<<": ";
                         cout << "Error semantico: " << simbolo << " ya existe"<< endl;
+                        error=true;
                     }else{
                         tabla.inserta(simbolo,tipoDef,tipoDato,ambito);
                     }
@@ -179,6 +182,7 @@ char nodoSintactico::validaTipos(){
                     if(tabla.existe(simbolo,ambito)){
                         cout<<"Ln "<<(*it)->linea<<": ";
                         cout << "Error semantico: " << simbolo << " ya existe"<< endl;
+                        error=true;
                     }else{
                         tabla.inserta(simbolo,tipoDef,tipoDato,ambito);
                     }
@@ -218,6 +222,7 @@ char nodoSintactico::validaTipos(){
                     if(tabla.existe(simbolo,ambito+"Param")){
                         cout<<"Ln "<<this->linea<<": ";
                         cout << "Error semantico: " << simbolo << " ya existe"<< endl;
+                        error=true;
                     }else{
                         tabla.inserta(simbolo,tipoDef,tipoDato,ambito+"Param");
                     }
@@ -249,6 +254,7 @@ char nodoSintactico::validaTipos(){
                     if(tabla.existe(simbolo,ambito+"Param")){
                         cout<<"Ln "<<this->linea<<": ";
                         cout << "Error semantico: " << simbolo << " ya existe"<< endl;
+                        error=true;
                     }else{
                         tabla.inserta(simbolo,tipoDef,tipoDato,ambito+"Param");
                     }
@@ -294,6 +300,7 @@ char nodoSintactico::validaTipos(){
             if(!(tabla.existe(simbolo,ambito)||tabla.existe(simbolo,ambito+"Param"))){
                 cout<<"Ln "<<this->linea<<": ";
                 cout << "Error semantico: " << simbolo << " no definido"<< endl;
+                error=true;
             }else{
                 tipoDato = tabla.getTipoDato(simbolo,ambito);
                 it++;
@@ -303,6 +310,7 @@ char nodoSintactico::validaTipos(){
                 if(tipoDato != tipoDato2){
                     cout<<"Ln "<<this->linea<<": ";
                     cout << "Error semantico: " << simbolo << " no es de tipo " << tipoDato2 << endl;
+                    error=true;
                 }
             }
             break;
@@ -314,6 +322,7 @@ char nodoSintactico::validaTipos(){
             if((*it)->tipoDato != 'b'){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es de tipo booleano" << endl;
+                error=true;
             }
             it++;
             it++;
@@ -329,6 +338,7 @@ char nodoSintactico::validaTipos(){
             if((*it)->tipoDato != 'b'){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es de tipo booleano" << endl;
+                error=true;
             }
             it++;
             it++;
@@ -341,6 +351,7 @@ char nodoSintactico::validaTipos(){
             if((*it)->tipoDato != tabla.getTipoDato(ambito,"global")){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es del tipo de la funcion" << endl;
+                error=true;
             }
             break;
 
@@ -381,6 +392,7 @@ char nodoSintactico::validaTipos(){
             if(tipoDato != tipoDato2){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es de tipo de Argumento" << endl;
+                error=true;
             }
             it++;
             ambito=ambitoAnt;
@@ -400,6 +412,7 @@ char nodoSintactico::validaTipos(){
             if((*it)->tipoDato != tabla.getTipoDatoArg(espacio++,simbolo)){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es de tipo de Argumento" << endl;
+                error=true;
             }
             it++;
             ambito=ambitoAnt;
@@ -414,6 +427,7 @@ char nodoSintactico::validaTipos(){
             if(!(tabla.existe((*hijos.begin())->valor,ambito)||tabla.existe((*hijos.begin())->valor,ambito+"Param"))){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout<<"Error semantico: "<<(*hijos.begin())->valor<<" no definido"<<endl;
+                error=true;
             }else{
                 this->tipoDato = tabla.getTipoDato((*hijos.begin())->valor,ambito);
             }
@@ -433,6 +447,7 @@ char nodoSintactico::validaTipos(){
             if(tabla.getTipo((*it)->valor,ambito) != "DefFunc"){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout<<"Error semantico: "<<(*it)->valor<<" no es Funcion"<<endl;
+                error=true;
             }
             ambitoAnt=ambito;
             ambito=(*it)->valor+","+ambito;
@@ -468,6 +483,7 @@ char nodoSintactico::validaTipos(){
             if((*it)->tipoDato != 'b'){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es de tipo bool" << endl;
+                error=true;
             }
             this->tipoDato = (*it)->tipoDato;
             break;
@@ -482,6 +498,7 @@ char nodoSintactico::validaTipos(){
             if(tipoDato != tipoDato2){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es de tipo " << tipoDato << endl;
+                error=true;
             }
             this->tipoDato = (*it)->tipoDato;
             break;
@@ -496,6 +513,7 @@ char nodoSintactico::validaTipos(){
             if(tipoDato != tipoDato2){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es de tipo " << tipoDato << endl;
+                error=true;
             }
             this->tipoDato = (*it)->tipoDato;
             break;
@@ -510,6 +528,7 @@ char nodoSintactico::validaTipos(){
             if(tipoDato != tipoDato2){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es de tipo " << tipoDato << endl;
+                error=true;
             }
             this->tipoDato = 'b';
             break;
@@ -524,6 +543,7 @@ char nodoSintactico::validaTipos(){
             if(tipoDato != tipoDato2){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es de tipo " << tipoDato << endl;
+                error=true;
             }
             this->tipoDato = 'b';
             break;
@@ -533,6 +553,7 @@ char nodoSintactico::validaTipos(){
             if((*it)->tipoDato != 'b'){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es de tipo bool" << endl;
+                error=true;
             }
             it++;
             it++;
@@ -540,6 +561,7 @@ char nodoSintactico::validaTipos(){
             if((*it)->tipoDato != 'b'){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es de tipo bool" << endl;
+                error=true;
             }
             this->tipoDato = 'b';
             break;
@@ -549,6 +571,7 @@ char nodoSintactico::validaTipos(){
             if((*it)->tipoDato != 'b'){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es de tipo bool" << endl;
+                error=true;
             }
             it++;
             it++;
@@ -556,6 +579,7 @@ char nodoSintactico::validaTipos(){
             if((*it)->tipoDato != 'b'){
                 cout<<"Ln "<<(*it)->linea<<": ";
                 cout << "Error semantico: " << (*it)->valor << " no es de tipo bool" << endl;
+                error=true;
             }
             this->tipoDato = 'b';
             break;
@@ -564,18 +588,10 @@ char nodoSintactico::validaTipos(){
             (*it)->validaTipos();
             this->tipoDato = (*it)->tipoDato;
             break;
-
-
-
-
-
-        
         default:
             i=0;
             break;
         }
-    }else{
-        cout<<"Validando tipos de "<<valor<<endl;
     }
     return ' ';
 }
