@@ -55,6 +55,7 @@
     <li>
       <a href="#Acerca-del-proyecto">Acerca del proyecto</a>
       <ul>
+        <li><a href="#Resultados:">Resultados</a></li>
         <li><a href="#Hecho-con">Hecho con</a></li>
       </ul>
     </li>
@@ -79,11 +80,11 @@
 
 ![Product Name Screen Shot](images/Stable.png)
 
-_Tabla del analizador sintáctico_
+_Reglas del analizador semántico:
 
-Para el analizador sintáctico me inspire del codigo que proporciono el profesor, agregue ya todos los codigos al lexico y programe los ejercicios, traduje los codigos del lexico al los codigos de la tabla del ejercicio, procese la informacion de la tabla correctamente.
+Para el analizador semántico me inspire con las que proporciono el profesor, programe cada regla para validar sus simbolos, variables y funciones, implemente una tabla de simbolos para administrar variables, funciones y sus parametros.
 Solo aplique Programacion orientada a objetos el "nodoSintactico" cuenta con una lista de nodos hijos, el mismo nodo sirve para los estados y los no terminales.
-Ya cree una clase para cargar la gramatica con los vectores correspondientes desde el archivo compilador.lr
+Cada regla tiene su propio codigo para validar sus simbolos, variables y funciones ademas.
 
 Funciones:
 * Analiza por elemento lexico.
@@ -92,161 +93,159 @@ Funciones:
 * Procesa la informacion de la tabla.
 * Desplazamientos en tabla.
 * Reducciones dependiendo de reglas.
+* Analizador semantico.
+* Tabla de simbolos.
+* Manejo de errores:
+* Manejo de errores semanticos.
+* Manejo de errores sintacticos.
+* Manejo de errores lexicos.
 
 Falta:
-* analizador semantico
+* Generar codigo intermedio.
 
-### nodosSintactico
+### Tabla de simbolos
 ```cpp
-class Gramatica
+class ElementoTabla
 {
-    public:
-    int reglas;
-    vector<int> idRegla;
-    vector<int> lonRegla;
-    vector<string> simRegla;
-    int filas, columnas;
-    vector<vector<int> > tablaLR;
-    Gramatica();
-    ~Gramatica();
+public:
+    string ambito;
+    string simbolo;
+    string tipo;
+    char tipoDato;
+    void muestra();
 };
 
-Gramatica::Gramatica()
+void ElementoTabla::muestra()
 {
-    //leer archivo
-    ifstream archivo("GramaticaCompilador/compilador.lr", ios::in);
-    if(archivo.fail()){
-        cout << "No se pudo abrir el archivo" << endl;
-        exit(1);
-    }
-    //leer reglas
-    archivo >> reglas;
-    idRegla.resize(reglas);
-    lonRegla.resize(reglas);
-    simRegla.resize(reglas);
-    for(int i = 0; i < reglas; i++){
-        archivo >> idRegla[i];
-        archivo >> lonRegla[i];
-        archivo >> simRegla[i];
-    }
-    //leer tabla
-    archivo >> filas >> columnas;
-    tablaLR.resize(filas);
-    for(int i = 0; i < filas; i++){
-        tablaLR[i].resize(columnas);
-        for(int j = 0; j < columnas; j++){
-            archivo >> tablaLR[i][j];
-        }
-    }
-    archivo.close();
-    
+    cout << "Simbolo: " << tipo << tipoDato << simbolo << " en: " << ambito << endl;
 }
 
-Gramatica::~Gramatica()
+class TablaSimbolos
 {
-}
-```
+public:
+    list<ElementoTabla> tabla;
+    void inserta(string simbolo, string tipo, char tipoDato, string ambito);
+    void muestra();
+    bool existe(string simbolo, string ambito);
+    string getTipo(string simbolo, string ambito);
+    char getTipoDato(string simbolo, string ambito);
+    char getTipoAnt();
+    char getTipoDatoArg(int espacio, string ambito);
+};
 
-### Analizador sintactico
-
-```cpp
-void desplazar(){
-    nodoSintactico *estado= new nodoSintactico('E',columna,siguienteFila,lexico.simbolo);
-    pila.push(estado);
-}
-
-void reducir(){
-    int regla = abs(siguienteFila)-2;
-    int n = gramatica.lonRegla[regla];
-    nodoSintactico *nodo= new nodoSintactico('N',siguienteFila,gramatica.idRegla[regla],gramatica.simRegla[regla]);
-    for(int i=0;i<n;i++){
-        nodo->hijos.push_front(pila.top());
-        pila.pop();
-    }
-
-    columna=gramatica.idRegla[regla];
-    fila = pila.top()->fila;
-
-    pila.push(nodo);
-
-    siguienteFila = gramatica.tablaLR[fila][columna];
-    pila.top()->fila = siguienteFila;
-
-    siguienteFila = gramatica.tablaLR[pila.top()->fila][lexico.tipo];
-    if(siguienteFila<-1){
-        reducir();
-        return;
-    }
-
-    nodoSintactico *nodo2= new nodoSintactico('E',lexico.tipo,siguienteFila,lexico.simbolo);
-    pila.push(nodo2);
+void TablaSimbolos::inserta(string simbolo, string tipo, char tipoDato, string ambito)
+{
+    ElementoTabla elemento;
+    elemento.simbolo = simbolo;
+    elemento.tipo = tipo;
+    elemento.tipoDato = tipoDato;
+    elemento.ambito = ambito;
+    tabla.push_back(elemento);
 }
 
-void semantica(){
-    while (true)
+void TablaSimbolos::muestra()
+{
+    list<ElementoTabla>::iterator it;
+    for (it = tabla.begin(); it != tabla.end(); it++)
     {
-        lexico.sigSimbolo();
+        (*it).muestra();
+    }
+}
 
-        fila=pila.top()->fila;
-        columna=lexico.tipo;
-        
-        siguienteFila=gramatica.tablaLR[fila][columna];
+bool TablaSimbolos::existe(string simbolo, string ambito)
+{
+    list<ElementoTabla>::iterator it;
+    for (it = tabla.begin(); it != tabla.end(); it++)
+    {
+        if ((*it).simbolo == simbolo && (*it).ambito == ambito)
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
-        if (siguienteFila>0){
-            desplazar();
+string TablaSimbolos::getTipo(string simbolo, string ambito)
+{
+    list<ElementoTabla>::iterator it;
+    for (it = tabla.begin(); it != tabla.end(); it++)
+    {
+        if ((*it).simbolo == simbolo && (*it).ambito == ambito)
+        {
+            return (*it).tipo;
         }
-        if (siguienteFila<=-2){
-            reducir();
+    }
+    for (it = tabla.begin(); it != tabla.end(); it++)
+    {
+        if ((*it).simbolo == simbolo && (*it).ambito == "global")
+        {
+            return (*it).tipo;
         }
-        if (siguienteFila==-1){
-            cout << "aceptación" << endl;
-            break;
-        }
-        if (siguienteFila==0){
-          cout << "error simbolo inesperado: " << lexico.simbolo << endl;
-            cin.get();
-            return;
-        }
+    }
+    return "";
+}
 
+char TablaSimbolos::getTipoDato(string simbolo, string ambito)
+{
+    list<ElementoTabla>::iterator it;
+    for (it = tabla.begin(); it != tabla.end(); it++)
+    {
+        if ((*it).simbolo == simbolo && (*it).ambito == ambito)
+        {
+            return (*it).tipoDato;
+        }
+    }
+    for(it = tabla.begin(); it != tabla.end(); it++)
+    {
+        if((*it).simbolo == simbolo && (*it).ambito == ambito+"Param")
+        {
+            return (*it).tipoDato;
+        }
+    }
+    for(it = tabla.begin(); it != tabla.end(); it++)
+    {
+        if((*it).simbolo == simbolo && (*it).ambito == "global")
+        {
+            return (*it).tipoDato;
+        }
     }
     
+    return ' ';
+}
 
-    std::cin.get();
+char TablaSimbolos::getTipoAnt()
+{
+    return tabla.end()->tipoDato;
+}
+
+char TablaSimbolos::getTipoDatoArg(int espacio, string ambito)
+{
+    ambito = ambito + "Param";
+    int contador = 0;
+    list<ElementoTabla>::iterator it;
+    for (it = tabla.begin(); it != tabla.end(); it++)
+    {
+        if((*it).ambito == ambito)
+        {
+            if(contador == espacio)
+            {
+                return (*it).tipoDato;
+            }
+            contador++;
+        }
+    }
+    return ' ';
 }
 ```
 
-### Imprimir Arbol 
+### Analizador semántico
 
-```cpp
-void Pila::muestra(){
+![Screenshot de la cantidad insana de codigo](images/semanticoFunc.png)
+_Codigo del analizador semántico_
 
-    list<nodoSintactico*>::reverse_iterator it;
-    contador=0;
-    cout << "Arbol: ";
-    
-    for (it= lista.rbegin(); it != lista.rend(); it++){
-        cout << *(*it) << " ";         
-    } 
 
-    cout << endl;
-}
 
-ostream& operator<<(ostream& os,  nodoSintactico& nodo){
-    for(int i=0;i<contador;i++){
-        os << "|-";
-    }
-    os << nodo.valor << endl;
-    contador++;
-    list<nodoSintactico*>::iterator it;
-    for(it=nodo.hijos.begin();it!=nodo.hijos.end();it++){
-        os << *(*it);
-    }
-    contador--;
-    return os;
-}
-```
-
-Resultado:
+## Resultados:
 
 
 ![Screen Shot 1](images/ss1.png)
