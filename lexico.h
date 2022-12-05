@@ -57,6 +57,7 @@ class Lexico{
       public:
        string simbolo;
        int tipo;
+       int linea;
              
        Lexico(string fuente);             
        Lexico();

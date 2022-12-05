@@ -18,6 +18,7 @@ class Pila{
       nodoSintactico* top();
       nodoSintactico* pop();
       void muestra();
+      void analiza();
 };
 
 

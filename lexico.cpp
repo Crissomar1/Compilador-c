@@ -1,6 +1,7 @@
 #include "lexico.h"
 
   Lexico::Lexico(string fuente){
+     this->linea=1;
     ind= 0;                  
     this->fuente= fuente;
   }      
@@ -89,6 +90,7 @@
   }
   
   void Lexico::entrada(string fuente){
+     linea=1;
        ind= 0;                  
       this->fuente= fuente;
   }
@@ -106,6 +108,7 @@ int Lexico::sigSimbolo(){
       switch (estado){
         case 0:
                if(esEspacio(c)) estado=0;
+               if(c=='\n') linea++;
                else
                if(esLetra(c)) sigEstado(9);
                else

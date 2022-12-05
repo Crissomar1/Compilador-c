@@ -21,11 +21,11 @@ bool lockSimbolo = false;
 Lexico lexico; 
 string entrada ;
 
-void semantica();
+void sintactica();
+void analisisSemantico();
 
 int main(int argc, char *argv[]){
-    nodoSintactico *nodo= new nodoSintactico('E',TipoSimbolo::PESOS,0,"$");
-
+    nodoSintactico *nodo= new nodoSintactico('E',TipoSimbolo::PESOS,0,"$",0,0);
     pila.push(/*TipoSimbolo::PESOS*/nodo);//2 en el ejemplo y ejercicios actual
 
     
@@ -36,21 +36,21 @@ int main(int argc, char *argv[]){
     cout << "Entrada: "<<endl << entrada << endl << endl;
     
     lexico.entrada(entrada);
-    semantica();
-    pila.muestra();
+    sintactica();
+    analisisSemantico();
   
     return 0;
 }
 
 void desplazar(){
-    nodoSintactico *estado= new nodoSintactico('E',columna,siguienteFila,lexico.simbolo);
+    nodoSintactico *estado= new nodoSintactico('E',columna,siguienteFila,lexico.simbolo,0,lexico.linea);
     pila.push(estado);
 }
 
 void reducir(){
     int regla = abs(siguienteFila)-2;
     int n = gramatica.lonRegla[regla];
-    nodoSintactico *nodo= new nodoSintactico('N',siguienteFila,gramatica.idRegla[regla],gramatica.simRegla[regla]);
+    nodoSintactico *nodo= new nodoSintactico('N',siguienteFila,gramatica.idRegla[regla],gramatica.simRegla[regla],regla,lexico.linea);
     for(int i=0;i<n;i++){
         nodo->hijos.push_front(pila.top());
         pila.pop();
@@ -70,14 +70,18 @@ void reducir(){
         return;
     }
 
-    nodoSintactico *nodo2= new nodoSintactico('E',lexico.tipo,siguienteFila,lexico.simbolo);
+    nodoSintactico *nodo2= new nodoSintactico('E',lexico.tipo,siguienteFila,lexico.simbolo,0,lexico.linea);
     pila.push(nodo2);
 }
 
-void semantica(){
+void sintactica(){
     while (true)
     {
         lexico.sigSimbolo();
+        if(lexico.tipo==TipoSimbolo::ERROR){
+            cout << "Error lexico en la linea: " << lexico.linea << endl;
+            return;
+        }
 
         fila=pila.top()->fila;
         columna=lexico.tipo;
@@ -95,7 +99,8 @@ void semantica(){
             break;
         }
         if (siguienteFila==0){
-          cout << "error simbolo inesperado: " << lexico.simbolo << endl;
+            cout << "ln " << lexico.linea;
+          cout << ": Error simbolo inesperado: " << lexico.simbolo << endl;
             cin.get();
             return;
         }
@@ -104,4 +109,9 @@ void semantica(){
     
 
     std::cin.get();
+}
+
+void analisisSemantico(){
+    cout << "Analisis Semantico" << endl;
+    pila.analiza();
 }
