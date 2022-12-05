@@ -249,8 +249,10 @@ _Codigo del analizador semántico_
 
 
 ![Screen Shot 1](images/ss1.png)
+_Ejemplo 1 de codigo fuente_
 
 ![Screen Shot 2](images/ss2.png)
+_Ejemplo 2 de codigo fuente_
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -322,7 +324,7 @@ Ejemplo:  _"int main(){}"_
 - [x] Analizador Sintáctico 
     - [x] Analizador sintáctico con objetos  
 - [x] Gramatica
-- [ ] Analizador Semántico
+- [x] Analizador Semántico
 - [ ] Generador de Código Intermedio
 - [ ] Generador de Código Objetivo
 
