@@ -55,7 +55,7 @@
     <li>
       <a href="#Acerca-del-proyecto">Acerca del proyecto</a>
       <ul>
-        <li><a href="#Resultados:">Resultados</a></li>
+        <li><a href="#Resultados">Resultados</a></li>
         <li><a href="#Hecho-con">Hecho con</a></li>
       </ul>
     </li>
@@ -245,7 +245,7 @@ _Codigo del analizador semántico_
 
 
 
-### Resultados:
+### Resultados
 
 
 ![Screen Shot 1](images/ss1.png)
