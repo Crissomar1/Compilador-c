@@ -80,7 +80,7 @@
 
 ![Product Name Screen Shot](images/Stable.png)
 
-_Reglas del analizador semántico:
+_Reglas del analizador semántico_
 
 Para el analizador semántico me inspire con las que proporciono el profesor, programe cada regla para validar sus simbolos, variables y funciones, implemente una tabla de simbolos para administrar variables, funciones y sus parametros.
 Solo aplique Programacion orientada a objetos el "nodoSintactico" cuenta con una lista de nodos hijos, el mismo nodo sirve para los estados y los no terminales.
@@ -241,7 +241,8 @@ char TablaSimbolos::getTipoDatoArg(int espacio, string ambito)
 ### Analizador semántico
 
 ![Screenshot de la cantidad insana de codigo](images/semanticoFunc.png)
-_Codigo del analizador semántico_
+
+_Gran codigo del analizador semántico basado en las reglas_
 
 
 
@@ -249,9 +250,11 @@ _Codigo del analizador semántico_
 
 
 ![Screen Shot 1](images/ss1.png)
+
 _Ejemplo 1 de codigo fuente_
 
 ![Screen Shot 2](images/ss2.png)
+
 _Ejemplo 2 de codigo fuente_
 
 
