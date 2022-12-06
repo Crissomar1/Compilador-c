@@ -23,6 +23,7 @@ string entrada ;
 
 void sintactica();
 void analisisSemantico();
+string generaCodigo();
 
 int main(int argc, char *argv[]){
     nodoSintactico *nodo= new nodoSintactico('E',TipoSimbolo::PESOS,0,"$",0,0);
@@ -38,6 +39,12 @@ int main(int argc, char *argv[]){
     lexico.entrada(entrada);
     sintactica();
     analisisSemantico();
+    if (error){
+        cout << "No es posible generar codigo con error." << endl;
+    }else{
+        cout << "No hay errores Generando codigo:" << endl;
+        cout << generaCodigo() << endl;
+    }
   
     return 0;
 }
@@ -114,4 +121,8 @@ void sintactica(){
 void analisisSemantico(){
     cout << "Analisis Semantico" << endl;
     pila.analiza();
+}
+
+string generaCodigo(){
+    return pila.generaCodigo();
 }

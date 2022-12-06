@@ -43,3 +43,15 @@ void Pila::analiza(){
 
    cout << endl;
 }
+
+string Pila::generaCodigo(){
+   list<nodoSintactico*>::iterator it;
+   contador=0;
+   cout << "Codigo: ";
+   stringstream ss;
+   it= lista.begin(); 
+   (*it)->generaCodigo(ss);
+
+   cout << ss.str() << endl;
+   return ss.str();
+}

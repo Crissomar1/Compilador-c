@@ -19,6 +19,7 @@ class Pila{
       nodoSintactico* pop();
       void muestra();
       void analiza();
+      string generaCodigo();
 };
 
 

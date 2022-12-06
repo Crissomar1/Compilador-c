@@ -33,6 +33,7 @@ public:
     char getTipoDato(string simbolo, string ambito);
     char getTipoAnt();
     char getTipoDatoArg(int espacio, string ambito);
+    stringstream& generaCodigo(stringstream &ss);
 };
 
 void TablaSimbolos::inserta(string simbolo, string tipo, char tipoDato, string ambito)
@@ -137,6 +138,18 @@ char TablaSimbolos::getTipoDatoArg(int espacio, string ambito)
         }
     }
     return ' ';
+}
+
+stringstream& TablaSimbolos::generaCodigo(stringstream &ss){
+    list<ElementoTabla>::iterator it;
+    for(it = tabla.begin(); it != tabla.end(); it++)
+    {
+        if((*it).ambito == "global"||(*it).tipo!="DefFunc")
+        {
+            ss << (*it).tipoDato << (*it).simbolo << " dd 0" << endl;
+        }
+    }
+    return ss;
 }
 
 
